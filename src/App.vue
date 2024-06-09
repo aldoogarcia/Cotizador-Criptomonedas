@@ -1,6 +1,7 @@
 <script setup>
-  import {onMounted, ref,reactive} from 'vue'
+  import {onMounted, ref,reactive,computed} from 'vue'
   import AlertaItem from './components/alerta-item.vue'
+  import SppinerItem from './components/sppiner-item.vue'
     const monedas = ref([
       { codigo: 'USD', texto: 'Dolar de Estados Unidos'},
       { codigo: 'MXN', texto: 'Peso Mexicano'},
@@ -15,6 +16,7 @@
   })
   const error=ref('')
   const cotizacion=ref({})
+  const spiner=ref(false)
 
   onMounted(()=>{
     const url = 'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD'
@@ -37,14 +39,21 @@
     obtenerCotizacion()
   }
   const obtenerCotizacion = async () => {
+    spiner.value=true
+    cotizacion.value={}
     const {moneda,criptomoneda}=monedasR
     const urlCotiza = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`
     
     const repuesta = await fetch(urlCotiza)
     const data = await repuesta.json()
     cotizacion.value= data.DISPLAY[criptomoneda][moneda]
+    spiner.value=false
     // console.log(cotizacion.value.TOPTIERVOLUME24HOUR);
   }
+  const muestraResult= computed(()=>{
+    return Object.values(cotizacion.value).length>0
+  })
+
 </script>
 
 <template>
@@ -87,8 +96,11 @@
         </div>
         <input type="submit" value="Cotizar"/>
       </form>
-
-      <div class="contenedor-resultado">
+      <SppinerItem
+        v-if="spiner"
+      />
+      <div v-if="muestraResult" class="contenedor-resultado">
+        
         <h2>Resultados</h2>
 
         <div class="resultado">
