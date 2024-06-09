@@ -1,31 +1,15 @@
 <script setup>
-  import {onMounted, ref,reactive,computed} from 'vue'
+  import { ref,reactive} from 'vue'
   import AlertaItem from './components/alerta-item.vue'
   import SppinerItem from './components/sppiner-item.vue'
-    const monedas = ref([
-      { codigo: 'USD', texto: 'Dolar de Estados Unidos'},
-      { codigo: 'MXN', texto: 'Peso Mexicano'},
-      { codigo: 'EUR', texto: 'Euro'},
-      { codigo: 'GBP', texto: 'Libra Esterlina'},
-  ])
+  import useCripto from './composable/useCripto'
 
-  const criptos=ref([])
+  const {monedas,criptos,spiner,cotizacion,obtenerCotizacion,muestraResult} = useCripto()
   const monedasR=reactive({
     moneda:'',
     criptomoneda:''
   })
   const error=ref('')
-  const cotizacion=ref({})
-  const spiner=ref(false)
-
-  onMounted(()=>{
-    const url = 'https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD'
-    fetch(url)
-     .then(respuesta=>respuesta.json())
-     .then(({Data}) => criptos.value=Data)
-    //  console,console.log(criptos.value);
-  })
-
   const cotizarMoneda = () => {
     if(Object.values(monedasR).includes('')){
       error.value='Todos los campos son obligatorios'
@@ -36,23 +20,8 @@
       return
     }
     error.value=''
-    obtenerCotizacion()
+    obtenerCotizacion(monedasR)
   }
-  const obtenerCotizacion = async () => {
-    spiner.value=true
-    cotizacion.value={}
-    const {moneda,criptomoneda}=monedasR
-    const urlCotiza = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}`
-    
-    const repuesta = await fetch(urlCotiza)
-    const data = await repuesta.json()
-    cotizacion.value= data.DISPLAY[criptomoneda][moneda]
-    spiner.value=false
-    // console.log(cotizacion.value.TOPTIERVOLUME24HOUR);
-  }
-  const muestraResult= computed(()=>{
-    return Object.values(cotizacion.value).length>0
-  })
 
 </script>
 
@@ -99,9 +68,10 @@
       <SppinerItem
         v-if="spiner"
       />
+      
       <div v-if="muestraResult" class="contenedor-resultado">
         
-        <h2>Resultados</h2>
+        <h2>Cotizacion</h2>
 
         <div class="resultado">
           <img :src="`https://cryptocompare.com/${cotizacion.IMAGEURL}`" alt="">
