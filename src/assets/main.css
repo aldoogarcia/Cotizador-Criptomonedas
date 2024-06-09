@@ -17,7 +17,7 @@ body {
 }
 .contenedor {
   max-width: 80rem;
-  width: 95%;
+  width: 100%;
   margin: 0 auto;
 
 }
@@ -36,7 +36,7 @@ body {
   margin-top: 5rem;
   padding: 6rem 2rem;
   background-color: var(--blanco);
-  max-width: 40rem;
+  max-width: 80rem;
   border-radius: 1rem;
   box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
 }

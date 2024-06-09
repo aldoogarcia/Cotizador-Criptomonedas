@@ -44,8 +44,6 @@
     const data = await repuesta.json()
     cotizacion.value= data.DISPLAY[criptomoneda][moneda]
     // console.log(cotizacion.value.TOPTIERVOLUME24HOUR);
-    
-    
   }
 </script>
 
@@ -89,6 +87,22 @@
         </div>
         <input type="submit" value="Cotizar"/>
       </form>
+
+      <div class="contenedor-resultado">
+        <h2>Resultados</h2>
+
+        <div class="resultado">
+          <img :src="`https://cryptocompare.com/${cotizacion.IMAGEURL}`" alt="">
+          <div >
+            <p><span>Criptomoneda: </span>{{ monedasR.criptomoneda }}</p>
+            <p><span>El precio es de : </span>{{ cotizacion.PRICE }}</p>
+            <p><span>El precio mas alto del dia : </span>{{ cotizacion.HIGHDAY }}</p>
+            <p><span>El precio mas bajo del dia : </span>{{ cotizacion.LOWDAY }}</p>
+            <p><span>Variacion ultimas 24 horas : </span>{{ cotizacion.CHANGEPCT24HOUR }}%</p>
+            <p><span>Ultima actualizacion : </span>{{ cotizacion.LASTUPDATE }}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
